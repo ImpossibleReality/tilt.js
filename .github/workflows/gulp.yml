@@ -19,7 +19,7 @@ jobs:
       # Sets up node
       - uses: actions/setup-node@v1
         with:
-          node-version: 10
+          node-version: 6
       - run: npm install
       - run: gulp
             
