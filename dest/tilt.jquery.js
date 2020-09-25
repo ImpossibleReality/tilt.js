@@ -59,12 +59,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             if (this.timeout !== undefined) clearTimeout(this.timeout);
             $(this).css({ 'transition': this.settings.speed + 'ms ' + this.settings.easing });
             if (this.settings.glare) this.glareElement.css({ 'transition': 'opacity ' + this.settings.speed + 'ms ' + this.settings.easing });
-            if (!this.settings.moveTransition) {
-                this.timeout = setTimeout(function () {
-                    $(_this2).css({ 'transition': '' });
-                    if (_this2.settings.glare) _this2.glareElement.css({ 'transition': '' });
-                }, this.settings.speed);
-            }
+            this.timeout = setTimeout(function () {
+                $(_this2).css({ 'transition': '' });
+                if (_this2.settings.glare) _this2.glareElement.css({ 'transition': '' });
+            }, this.settings.speed);
         };
 
         /**
@@ -138,7 +136,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
          * Update tilt transforms on mousemove
          */
         var updateTransforms = function updateTransforms() {
-            this.transforms = getValues.call(this);
+            this.objectives = getValues.call(this);
+            this.transforms.tiltX += (this.transforms.tiltX - this.objectives.tiltX) / this.settings.moveSpeed;
+            this.transforms.tiltY += (this.transforms.tiltY - this.objectives.tiltY) / this.settings.moveSpeed;
 
             if (this.reset) {
                 this.reset = false;
@@ -280,7 +280,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 reset: $(this).is('[data-tilt-reset]') ? $(this).data('tilt-reset') : true,
                 glare: $(this).is('[data-tilt-glare]') ? $(this).data('tilt-glare') : false,
                 maxGlare: $(this).is('[data-tilt-maxglare]') ? $(this).data('tilt-maxglare') : 1,
-                moveTransition: $(this).is('[data-tilt-movetransition]') ? $(this).data('tilt-movetransition') : false
+                moveSpeed: $(this).is('[data-tilt-movespeed]') ? $(this).data('tilt-movespeed') : 1
             }, options);
 
             // Add deprecation warning & set disableAxis to deprecated axis setting
@@ -293,8 +293,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 // Store settings
                 $(_this4).data('settings', _this4.settings);
 
-                // Prepare element
-                if (_this4.settings.glare) prepareGlare.call(_this4);
+                _this4.transforms = { tiltX: 0, tiltY: 0
+
+                    // Prepare element
+                };if (_this4.settings.glare) prepareGlare.call(_this4);
 
                 // Bind events
                 bindEvents.call(_this4);
