@@ -54,10 +54,12 @@
             if (this.timeout !== undefined) clearTimeout(this.timeout);
             $(this).css({'transition': `${this.settings.speed}ms ${this.settings.easing}`});
             if(this.settings.glare) this.glareElement.css({'transition': `opacity ${this.settings.speed}ms ${this.settings.easing}`});
-            this.timeout = setTimeout(() => {
-                $(this).css({'transition': ''});
-                if(this.settings.glare) this.glareElement.css({'transition': ''});
-            }, this.settings.speed);
+            if (!this.settings.moveTransition) {
+                this.timeout = setTimeout(() => {
+                    $(this).css({'transition': ''});
+                    if(this.settings.glare) this.glareElement.css({'transition': ''});
+                }, this.settings.speed);
+            }
         };
 
         /**
@@ -271,6 +273,7 @@
                 reset: $(this).is('[data-tilt-reset]') ? $(this).data('tilt-reset') : true,
                 glare: $(this).is('[data-tilt-glare]') ? $(this).data('tilt-glare') : false,
                 maxGlare: $(this).is('[data-tilt-maxglare]') ? $(this).data('tilt-maxglare') : 1,
+                moveTransition: $(this).is('[data-tilt-movetransition]') ? $(this).data('tilt-movetransition') : false,
             }, options);
 
             // Add deprecation warning & set disableAxis to deprecated axis setting
