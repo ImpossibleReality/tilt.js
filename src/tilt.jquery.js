@@ -54,12 +54,10 @@
             if (this.timeout !== undefined) clearTimeout(this.timeout);
             $(this).css({'transition': `${this.settings.speed}ms ${this.settings.easing}`});
             if(this.settings.glare) this.glareElement.css({'transition': `opacity ${this.settings.speed}ms ${this.settings.easing}`});
-            if (!this.settings.moveTransition) {
-                this.timeout = setTimeout(() => {
-                    $(this).css({'transition': ''});
-                    if(this.settings.glare) this.glareElement.css({'transition': ''});
-                }, this.settings.speed);
-            }
+            this.timeout = setTimeout(() => {
+                $(this).css({'transition': ''});
+                if(this.settings.glare) this.glareElement.css({'transition': ''});
+            }, this.settings.speed);
         };
 
         /**
@@ -133,8 +131,10 @@
          * Update tilt transforms on mousemove
          */
         const updateTransforms = function() {
-            this.transforms = getValues.call(this);
-
+            this.objectives =  getValues.call(this)
+            this.transforms.tiltX += (this.transforms.tiltX - this.objectives.tiltX) / this.settings.moveSpeed;
+            this.transforms.tiltY += (this.transforms.tiltY - this.objectives.tiltY) / this.settings.moveSpeed;
+            
             if (this.reset) {
                 this.reset = false;
                 $(this).css('transform', `perspective(${this.settings.perspective}px) rotateX(0deg) rotateY(0deg)`);
@@ -273,7 +273,7 @@
                 reset: $(this).is('[data-tilt-reset]') ? $(this).data('tilt-reset') : true,
                 glare: $(this).is('[data-tilt-glare]') ? $(this).data('tilt-glare') : false,
                 maxGlare: $(this).is('[data-tilt-maxglare]') ? $(this).data('tilt-maxglare') : 1,
-                moveTransition: $(this).is('[data-tilt-movetransition]') ? $(this).data('tilt-movetransition') : false,
+                moveSpeed: $(this).is('[data-tilt-movespeed]') ? $(this).data('tilt-movespeed') : 1,
             }, options);
 
             // Add deprecation warning & set disableAxis to deprecated axis setting
@@ -285,7 +285,9 @@
             this.init = () => {
                 // Store settings
                 $(this).data('settings', this.settings);
-
+                
+                this.transforms = {tiltX: 0, tiltY: 0}
+                
                 // Prepare element
                 if(this.settings.glare) prepareGlare.call(this);
 
