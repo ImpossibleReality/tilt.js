@@ -21,7 +21,8 @@ jobs:
         id: extract_branch
       - name: Checkout
         uses: actions/checkout@v2
-        ref: ${{ steps.extract_branch.outputs.branch }}
+        with:
+          ref: ${{ steps.extract_branch.outputs.branch }}
       # Sets up node
       - uses: actions/setup-node@v1
         with:
