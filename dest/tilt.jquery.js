@@ -59,10 +59,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             if (this.timeout !== undefined) clearTimeout(this.timeout);
             $(this).css({ 'transition': this.settings.speed + 'ms ' + this.settings.easing });
             if (this.settings.glare) this.glareElement.css({ 'transition': 'opacity ' + this.settings.speed + 'ms ' + this.settings.easing });
-            this.timeout = setTimeout(function () {
-                $(_this2).css({ 'transition': '' });
-                if (_this2.settings.glare) _this2.glareElement.css({ 'transition': '' });
-            }, this.settings.speed);
+            if (!this.settings.moveTransition) {
+                this.timeout = setTimeout(function () {
+                    $(_this2).css({ 'transition': '' });
+                    if (_this2.settings.glare) _this2.glareElement.css({ 'transition': '' });
+                }, this.settings.speed);
+            }
         };
 
         /**
@@ -277,7 +279,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 axis: $(this).is('[data-tilt-axis]') ? $(this).data('tilt-axis') : null,
                 reset: $(this).is('[data-tilt-reset]') ? $(this).data('tilt-reset') : true,
                 glare: $(this).is('[data-tilt-glare]') ? $(this).data('tilt-glare') : false,
-                maxGlare: $(this).is('[data-tilt-maxglare]') ? $(this).data('tilt-maxglare') : 1
+                maxGlare: $(this).is('[data-tilt-maxglare]') ? $(this).data('tilt-maxglare') : 1,
+                moveTransition: $(this).is('[data-tilt-movetransition]') ? $(this).data('tilt-movetransition') : false
             }, options);
 
             // Add deprecation warning & set disableAxis to deprecated axis setting
