@@ -15,7 +15,13 @@ jobs:
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      - name: Checkout
+        uses: actions/checkout@v2
+        ref: ${{ steps.extract_branch.outputs.branch }}
       # Sets up node
       - uses: actions/setup-node@v1
         with:
@@ -29,6 +35,6 @@ jobs:
           git add --all
           git commit -m "Built By Gulp"
       - name: Push changes
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@v0.6.0
         with:
           github_token: ${{ secrets.REPO_GITHUB_TOKEN }}
